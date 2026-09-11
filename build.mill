@@ -1,0 +1,63 @@
+package build
+
+import mill._
+import mill.javalib._
+import mill.javalib.quarkus.QuarkusModule
+
+trait BaseQuarkusModule extends QuarkusModule, MavenModule {
+  def quarkusPlatformVersion = "3.31.3"
+
+  override def javacOptions = Seq("--release", "25")
+
+  def artifactGroupId = "com.chessland"
+  def artifactVersion = "0.0.1-SNAPSHOT"
+
+  override def mvnDeps = super.mvnDeps() ++ Seq(
+    mvn"io.quarkus:quarkus-arc",
+    mvn"io.quarkus:quarkus-rest",
+    mvn"io.quarkus:quarkus-rest-jackson",
+    mvn"io.quarkus:quarkus-jdbc-mariadb"
+  )
+
+  trait QuarkusJunitTests extends MavenTests, QuarkusJunit {
+    override def mvnDeps = super.mvnDeps() ++ Seq(
+      mvn"io.rest-assured:rest-assured:5.4.0",
+      mvn"org.assertj:assertj-core:3.26.3"
+    )
+  }
+}
+
+object `player-core` extends BaseQuarkusModule {
+  def artifactId = "player-core"
+
+  override def mvnDeps = super.mvnDeps() ++ Seq(
+    mvn"io.quarkus:quarkus-oidc",
+    mvn"io.quarkus:quarkus-redis-client"
+  )
+
+  object test extends QuarkusJunitTests
+}
+
+object game extends BaseQuarkusModule {
+  def artifactId = "game"
+
+  object test extends QuarkusJunitTests
+}
+
+object moderation extends BaseQuarkusModule {
+  def artifactId = "moderation"
+
+  object test extends QuarkusJunitTests
+}
+
+object stats extends BaseQuarkusModule {
+  def artifactId = "stats"
+
+  object test extends QuarkusJunitTests
+}
+
+object puzzle extends BaseQuarkusModule {
+  def artifactId = "puzzle"
+
+  object test extends QuarkusJunitTests
+}

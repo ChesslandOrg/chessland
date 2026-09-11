@@ -1,0 +1,18 @@
+# Whitelist approach: ignore everything by default, then explicitly
+# re-include only the Quarkus fast-jar output the Dockerfile.jvm COPYs from.
+# This keeps the build context tiny even though out/ holds compiled
+# classes, caches and intermediate artifacts for all five modules.
+**
+!out/*/quarkusApp.dest/quarkus/quarkus-app/**
+
+# --- Fallback / explicit excludes ---
+# Already covered by the "**" wildcard above, listed here for clarity
+# and in case you switch to the flatter blacklist-style ignore instead.
+.git
+.idea
+*.iml
+.vscode
+.DS_Store
+.metals
+.bloop
+.bsp

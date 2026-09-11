@@ -1,0 +1,20 @@
+# Mill build output (compiled classes, caches, Quarkus fast-jar output, etc.)
+out/
+
+# Metals / Bloop / BSP (Scala/Mill IDE tooling)
+.metals/
+.bloop/
+.bsp/
+metals.sbt
+
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# OS
+.DS_Store
+
+# Local env overrides, if you use them later
+.env
+.env.local
