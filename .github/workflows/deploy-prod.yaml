@@ -1,0 +1,51 @@
+name: Deploy Production
+
+on:
+  workflow_dispatch:
+    inputs:
+      image_tag:
+        description: Docker image tag to deploy
+        required: true
+        type: string
+
+concurrency:
+  group: chessland-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    environment:
+      name: production
+
+    env:
+      IMAGE_TAG: ${{ inputs.image_tag }}
+
+    steps:
+      - name: Deploy
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+          COMPOSE_DIR: ${{ secrets.COMPOSE_DIR }}
+          GHCR_USERNAME: ${{ secrets.GHCR_USERNAME }}
+          GHCR_TOKEN: ${{ secrets.GHCR_TOKEN }}
+        run: |
+          mkdir -p ~/.ssh
+
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+
+          ssh-keyscan -H "$SSH_HOST" >> ~/.ssh/known_hosts
+
+          printf '%s' "$GHCR_TOKEN" | \
+            ssh "$SSH_USER@$SSH_HOST" \
+            "docker login ghcr.io -u '$GHCR_USERNAME' --password-stdin"
+
+          ssh "$SSH_USER@$SSH_HOST" "
+            cd '$COMPOSE_DIR' &&
+            sed -i 's/^IMAGE_TAG=.*/IMAGE_TAG=${IMAGE_TAG}/' .env &&
+            docker compose --env-file .env -f docker-compose.prod.yml pull &&
+            docker compose --env-file .env -f docker-compose.prod.yml up -d --remove-orphans
+          "
