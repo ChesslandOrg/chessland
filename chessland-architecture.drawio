@@ -1,6 +1,6 @@
 <mxfile host="app.diagrams.net">
   <diagram id="chessland-english-clean" name="Chessland Architecture Clean">
-    <mxGraphModel dx="2175" dy="1278" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1800" pageHeight="780" math="0" shadow="0">
+    <mxGraphModel dx="2357" dy="1385" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1800" pageHeight="1060" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -137,6 +137,68 @@
           <mxGeometry height="50" relative="1" width="50" as="geometry">
             <mxPoint x="1430" y="540" as="sourcePoint" />
             <mxPoint x="1480" y="490" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="obs" parent="1" style="swimlane;html=1;rounded=1;horizontal=0;startSize=34;fillColor=#e8e8ff;strokeColor=#7c7cd6;fontStyle=1;fontSize=15;" value="OBSERVABILITY" vertex="1">
+          <mxGeometry height="260" width="1720" x="40" y="760" as="geometry" />
+        </mxCell>
+        <mxCell id="otel" parent="obs" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=13;fontStyle=1;verticalAlign=top;spacingTop=8;spacingLeft=8;spacingRight=8;" value="&lt;b&gt;OTEL-COLLECTOR&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:11px;font-weight:normal&quot;&gt;OpenTelemetry Collector Contrib /&lt;br&gt;OTLP gRPC &amp;amp; HTTP Receivers /&lt;br&gt;Traces &amp;amp; Metrics Ingestion from&lt;br&gt;All Quarkus Services / Export Pipeline&lt;/font&gt;" vertex="1">
+          <mxGeometry height="170" width="250" x="40" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="jaeger" parent="obs" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=13;fontStyle=1;verticalAlign=top;spacingTop=8;spacingLeft=8;spacingRight=8;" value="&lt;b&gt;JAEGER&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:11px;font-weight:normal&quot;&gt;Distributed Tracing Backend /&lt;br&gt;Trace Storage &amp;amp; Query /&lt;br&gt;Service Dependency Graphs /&lt;br&gt;Latency &amp;amp; Span Inspection&lt;/font&gt;" vertex="1">
+          <mxGeometry height="170" width="250" x="318" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="obs-e1" edge="1" parent="obs" source="otel" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#6c8ebf;strokeWidth=1.5;labelBackgroundColor=#ffffff;fontSize=10;" target="jaeger" value="Export Traces">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="prom" parent="obs" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=13;fontStyle=1;verticalAlign=top;spacingTop=8;spacingLeft=8;spacingRight=8;" value="&lt;b&gt;PROMETHEUS&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:11px;font-weight:normal&quot;&gt;Metrics Time-Series Database /&lt;br&gt;Scrapes OTEL Collector Exporter /&lt;br&gt;Alerting Rules Engine /&lt;br&gt;Service &amp;amp; Infra Metrics Storage&lt;/font&gt;" vertex="1">
+          <mxGeometry height="170" width="250" x="596" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="obs-e2" edge="1" parent="obs" source="otel" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#6c8ebf;strokeWidth=1.5;labelBackgroundColor=#ffffff;fontSize=10;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.25;entryY=0;entryDx=0;entryDy=0;" target="prom" value="Metrics Scrape Target">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="165.03" y="20.03" />
+              <mxPoint x="658.49" y="20.03" />
+            </Array>
+            <mxPoint x="140" y="10.170000000000073" as="sourcePoint" />
+            <mxPoint x="699.766129032258" y="10" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="loki" parent="obs" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=13;fontStyle=1;verticalAlign=top;spacingTop=8;spacingLeft=8;spacingRight=8;" value="&lt;b&gt;LOKI&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:11px;font-weight:normal&quot;&gt;Log Aggregation Backend /&lt;br&gt;Label-Based Log Indexing /&lt;br&gt;LogQL Query Engine /&lt;br&gt;Centralized Container Log Storage&lt;/font&gt;" vertex="1">
+          <mxGeometry height="170" width="250" x="874" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="alloy" parent="obs" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=13;fontStyle=1;verticalAlign=top;spacingTop=8;spacingLeft=8;spacingRight=8;" value="&lt;b&gt;ALLOY&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:11px;font-weight:normal&quot;&gt;Grafana Agent /&lt;br&gt;Docker Container Log Discovery /&lt;br&gt;Log Tailing &amp;amp; Shipping /&lt;br&gt;Reads Docker Socket for Metadata&lt;/font&gt;" vertex="1">
+          <mxGeometry height="170" width="250" x="1152" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="obs-e3" edge="1" parent="obs" source="alloy" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#9673a6;strokeWidth=1.5;labelBackgroundColor=#ffffff;fontSize=10;" target="loki" value="Ship Container Logs">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="grafana" parent="obs" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=13;fontStyle=1;verticalAlign=top;spacingTop=8;spacingLeft=8;spacingRight=8;" value="&lt;b&gt;GRAFANA&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:11px;font-weight:normal&quot;&gt;Unified Observability Dashboard /&lt;br&gt;Metrics, Traces &amp;amp; Logs Visualization /&lt;br&gt;Data Sources: Prometheus, Jaeger, Loki /&lt;br&gt;Admin-Provisioned Dashboards&lt;/font&gt;" vertex="1">
+          <mxGeometry height="170" width="250" x="1430" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="obs-e4" edge="1" parent="obs" source="grafana" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#d6b656;strokeWidth=1.5;labelBackgroundColor=#ffffff;fontSize=10;exitX=0.25;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="prom" value="Query Metrics">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1492.54" y="20" />
+              <mxPoint x="720.08" y="20" />
+              <mxPoint x="720.08" y="40" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="obs-e5" edge="1" parent="obs" source="grafana" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#d6b656;strokeWidth=1.5;labelBackgroundColor=#ffffff;fontSize=10;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" target="loki" value="Query Logs">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1555" y="230.04" />
+              <mxPoint x="999" y="230.04" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="obs-e6" edge="1" parent="obs" source="grafana" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#d6b656;strokeWidth=1.5;labelBackgroundColor=#ffffff;fontSize=10;exitX=0.25;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" target="jaeger" value="Query Traces">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1492.55" y="250" />
+              <mxPoint x="443" y="250" />
+            </Array>
           </mxGeometry>
         </mxCell>
       </root>
